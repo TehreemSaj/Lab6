@@ -14,7 +14,7 @@ Name(s)     : Tehreem Sajid, Zehra Zaidi
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student and Courses</title>
-	<style>
+    <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -33,10 +33,10 @@ Name(s)     : Tehreem Sajid, Zehra Zaidi
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
-			display: block; /* Use block display */
-			width: max-content; /* Width as per content */
-			width: -moz-max-content; /* For Mozilla */
-			width: -webkit-max-content; /* For Webkit */
+            display: block;
+            width: max-content;
+            width: -moz-max-content;
+            width: -webkit-max-content;
         }
         li:hover {
             background-color: #ddd;
@@ -46,17 +46,40 @@ Name(s)     : Tehreem Sajid, Zehra Zaidi
         }
     </style>
     <script>
-        // Function to fetch and display students
         async function fetchStudents() {
-            
+            try {
+                const response = await fetch('https://65e11805d3db23f7624a698d.mockapi.io/students');
+                const students = await response.json();
+                const studentList = document.getElementById('studentList');
+
+                students.forEach(student => {
+                    const li = document.createElement('li');
+                    li.textContent = student.name;
+                    li.onclick = () => fetchCourses(student.id);
+                    studentList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error fetching students:', error);
+            }
         }
 
-        // Function to fetch and display courses for a student
         async function fetchCourses(studentId) {
-            
+            try {
+                const response = await fetch(`https://65e11805d3db23f7624a698d.mockapi.io/students/${studentId}/courses`);
+                const courses = await response.json();
+                const courseList = document.getElementById('courseList');
+                courseList.innerHTML = ''; // Clear previous courses
+
+                courses.forEach(course => {
+                    const li = document.createElement('li');
+                    li.textContent = `${course.name} - ${course.unit}`;
+                    courseList.appendChild(li);
+                });
+            } catch (error) {
+                console.error(`Error fetching courses for student ID ${studentId}:`, error);
+            }
         }
 
-        // Fetch students on window load
         window.onload = fetchStudents;
     </script>
 </head>
@@ -71,3 +94,4 @@ Name(s)     : Tehreem Sajid, Zehra Zaidi
     </div>
 </body>
 </html>
+
